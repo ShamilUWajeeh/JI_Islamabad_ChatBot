@@ -1,27 +1,31 @@
 import streamlit as st
 from db import init_db
 
-# Ensure DB exists
+# 1. Initialize the Database immediately when the app starts
 init_db()
 
-# 1. Configure the page to keep the sidebar expanded by default
+# 2. Configure the page settings
 st.set_page_config(
     page_title="JI Islamabad Bot", 
     page_icon="☪️",
-    initial_sidebar_state="expanded"  # <--- THIS FORCES THE SIDEBAR OPEN
+    initial_sidebar_state="expanded" # Keeps the sidebar open by default
 )
 
+# 3. Main Header and Title
 st.title("Jamaat-e-Islami Islamabad ☪️")
 st.subheader("Digital Knowledge Base & Election System")
 
+# 4. Navigation Section
 st.markdown("---")
 st.info("👇 **Select a Dashboard:**")
 
-# 2. Add Big Clickable Buttons (No arrow needed!)
+# Create two columns for big buttons
 col1, col2 = st.columns(2)
 
 with col1:
-    st.page_link("pages/1_🤖_Chat.py", label="🤖 Open Chatbot", icon="💬")
+    # Points to "pages/1_Chat.py" (Renamed file)
+    st.page_link("pages/1_Chat.py", label="Open Chatbot", icon="🤖")
 
 with col2:
-    st.page_link("pages/2_🔐_Admin.py", label="🔐 Admin Panel", icon="⚙️")
+    # Points to "pages/2_Admin.py" (Renamed file)
+    st.page_link("pages/2_Admin.py", label="Admin Panel", icon="🔐")
