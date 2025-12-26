@@ -57,31 +57,36 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         padding-bottom: 20px;
-        border-bottom: 2px solid;
+        border-bottom: 3px solid;
         border-image: linear-gradient(135deg, #1E8F4E 0%, #2E9BCB 100%) 1;
     }
     
     .header-logo {
-        width: 80px; /* Adjust logo size */
-        margin-right: 20px;
+        width: 100px; /* Logo Size */
+        margin-right: 25px;
         animation: float-logo 3s ease-in-out infinite; /* Floating Animation */
+        border-radius: 10px;
     }
     
     .header-text {
         font-family: 'sans-serif';
         color: #111111;
-        font-weight: 800;
-        font-size: 3.5rem; /* EXTRA LARGE TEXT */
-        line-height: 1.1;
+        font-weight: 900; /* Extra Bold */
+        font-size: 4.5rem; /* MASSIVE TEXT SIZE */
+        line-height: 1.0;
         margin: 0;
+        text-transform: uppercase; /* Makes it look more official */
+        letter-spacing: -1px;
     }
     
     /* Mobile Responsiveness for Header */
     @media (max-width: 600px) {
-        .header-text { font-size: 2.2rem; }
-        .header-logo { width: 60px; }
+        .header-text { font-size: 2.5rem; }
+        .header-logo { width: 70px; }
+        .main-header-container { flex-direction: column; text-align: center; }
+        .header-logo { margin-right: 0; margin-bottom: 10px; }
     }
 
     /* 4. BUTTON CARDS */
@@ -122,10 +127,15 @@ st.markdown("""
 # --- MAIN INTERFACE ---
 
 # 1. Custom Animated Header (Logo + Big Text)
-# We use HTML to force them side-by-side with animation
 logo_b64 = get_base64_image("logo.png")
-logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="header-logo">' if logo_b64 else ''
 
+# If logo exists, use it. If not, don't break the HTML.
+if logo_b64:
+    logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="header-logo">'
+else:
+    logo_html = '' 
+
+# CRITICAL FIX: unsafe_allow_html=True MUST be here
 st.markdown(f"""
     <div class="main-header-container">
         {logo_html}
