@@ -1,8 +1,8 @@
 [theme]
-primaryColor = "#009933"    # JI Official Green
-backgroundColor = "#FFFFFF" # White background for cleanliness
-secondaryBackgroundColor = "#F0F2F6" # Light gray sidebar/inputs
-textColor = "#31333F"
+primaryColor = "#1E8F4E"        # Islamic Green (Primary Buttons/Inputs)
+backgroundColor = "#FFFFFF"     # Pure White (Main Background)
+secondaryBackgroundColor = "#F6F8F7" # Soft Off-White (Sidebar/Cards)
+textColor = "#111111"           # Deep Black (Main Text)
 font = "sans serif"
 
 [server]
