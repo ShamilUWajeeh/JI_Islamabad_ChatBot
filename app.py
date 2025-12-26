@@ -77,13 +77,72 @@ st.markdown("""
 # --- MAIN INTERFACE ---
 
 # 1. Logo Section (Optional: Checks if file exists)
+# ... (Keep your existing imports and setup code at the top) ...
+
+# --- MAIN INTERFACE ---
+
+# 1. Logo Section (Top Center)
 if os.path.exists("logo.png"):
-    st.image("logo.png", width=120)
+    col_logo1, col_logo2, col_logo3 = st.columns([1,1,1])
+    with col_logo2:
+        st.image("logo.png", use_container_width=True)
 
 st.title("Jamaat-e-Islami Islamabad")
 st.markdown("**Digital Knowledge Base & Election Management System**")
 
 st.markdown("---")
+
+# 2. Hero Section (Animation + Intro)
+col_anim, col_text = st.columns([1, 1.5])
+
+with col_anim:
+    if lottie_coding:
+        st_lottie(lottie_coding, height=200, key="coding")
+    else:
+        # Fallback if animation fails
+        st.image("https://cdn-icons-png.flaticon.com/512/10605/10605943.png", width=150)
+
+with col_text:
+    st.info("""
+    **Assalam-o-Alaikum!**
+    
+    Welcome to the official digital portal. 
+    Select a dashboard below to manage elections or assist voters.
+    """)
+
+st.write("") # Spacer
+
+# 3. Modern Navigation Grid (WITH CUSTOM ICONS)
+st.subheader("Select a Module")
+
+col1, col2 = st.columns(2)
+
+# --- CARD 1: PUBLIC CHAT ---
+with col1:
+    # Logic: Use local file if exists, otherwise use a web URL
+    if os.path.exists("chat_icon.png"):
+        st.image("chat_icon.png", width=100)
+    else:
+        # Fallback URL (A generic chat icon)
+        st.image("https://cdn-icons-png.flaticon.com/512/8943/8943377.png", width=100)
+        
+    if st.button("🤖 Open Public Chat", use_container_width=True):
+        st.switch_page("pages/1_Chat.py")
+
+# --- CARD 2: ADMIN PANEL ---
+with col2:
+    # Logic: Use local file if exists, otherwise use a web URL
+    if os.path.exists("admin_icon.png"):
+        st.image("admin_icon.png", width=100)
+    else:
+        # Fallback URL (A generic settings icon)
+        st.image("https://cdn-icons-png.flaticon.com/512/2942/2942813.png", width=100)
+        
+    if st.button("🔐 Open Admin Panel", use_container_width=True):
+        st.switch_page("pages/2_Admin.py")
+
+st.markdown("---")
+st.caption("© 2025 Jamaat-e-Islami Islamabad | Developed for Digital Wing")
 
 # 2. Hero Section (Animation + Intro)
 col_anim, col_text = st.columns([1, 1.5])
