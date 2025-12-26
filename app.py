@@ -17,7 +17,6 @@ init_db()
 
 # --- ASSETS & STYLING ---
 
-# 1. Load Lottie Animation (Helper Function)
 def load_lottieurl(url):
     try:
         r = requests.get(url)
@@ -27,38 +26,29 @@ def load_lottieurl(url):
     except:
         return None
 
-# Load a "Community/Team" animation
+# Load Animation
 lottie_coding = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_bo8vqwyw.json")
 
-# 2. Custom CSS for "Modern Cards" Look
+# Custom CSS for "Modern Cards" Look
 st.markdown("""
 <style>
-    /* Main Background adjustments */
-    .stApp {
-        background-color: #ffffff;
-    }
+    .stApp { background-color: #ffffff; }
+    h1 { color: #009933 !important; font-weight: 700 !important; }
     
-    /* Header Styling */
-    h1 {
-        color: #009933 !important; /* JI Green */
-        font-weight: 700 !important;
-    }
-    
-    /* Custom Card Styling for Buttons */
+    /* Button Styling */
     div.stButton > button {
         width: 100%;
-        height: 80px;
+        height: 60px; /* Adjusted height */
         background-color: white;
         color: #31333F;
         border: 2px solid #009933;
         border-radius: 12px;
-        font-size: 20px;
+        font-size: 18px; /* Adjusted font size */
         font-weight: bold;
         transition: all 0.3s ease;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
-    /* Hover Effect */
     div.stButton > button:hover {
         background-color: #009933;
         color: white;
@@ -67,16 +57,13 @@ st.markdown("""
         border-color: #009933;
     }
     
-    /* Logo Styling */
-    img {
-        border-radius: 10px;
-    }
+    img { border-radius: 10px; }
 </style>
 """, unsafe_allow_html=True)
 
 # --- MAIN INTERFACE ---
 
-# 1. Logo Section (Top Center)
+# 1. Logo
 if os.path.exists("logo.png"):
     col_logo1, col_logo2, col_logo3 = st.columns([1,1,1])
     with col_logo2:
@@ -84,17 +71,15 @@ if os.path.exists("logo.png"):
 
 st.title("Jamaat-e-Islami Islamabad")
 st.markdown("**Digital Knowledge Base & Election Management System**")
-
 st.markdown("---")
 
-# 2. Hero Section (Animation + Intro)
+# 2. Hero Section
 col_anim, col_text = st.columns([1, 1.5])
 
 with col_anim:
     if lottie_coding:
-        st_lottie(lottie_coding, height=200, key="unique_animation_key") # Fixed Key Name
+        st_lottie(lottie_coding, height=200, key="unique_animation_key")
     else:
-        # Fallback if animation fails
         st.image("https://cdn-icons-png.flaticon.com/512/10605/10605943.png", width=150)
 
 with col_text:
@@ -105,35 +90,32 @@ with col_text:
     Select a dashboard below to manage elections or assist voters.
     """)
 
-st.write("") # Spacer
+st.write("") 
 
-# 3. Modern Navigation Grid (WITH CUSTOM ICONS)
+# 3. Navigation Grid (CLEAN BUTTONS)
 st.subheader("Select a Module")
-
 col1, col2 = st.columns(2)
 
 # --- CARD 1: PUBLIC CHAT ---
 with col1:
-    # Logic: Use local file if exists, otherwise use a web URL
     if os.path.exists("chat_icon.png"):
         st.image("chat_icon.png", width=100)
     else:
-        # Fallback URL (A generic chat icon)
         st.image("https://cdn-icons-png.flaticon.com/512/8943/8943377.png", width=100)
         
-    if st.button("🤖 Open Public Chat", key="btn_chat", use_container_width=True):
+    # REMOVED EMOJI HERE 👇
+    if st.button("Open Public Chat", key="btn_chat", use_container_width=True):
         st.switch_page("pages/1_Chat.py")
 
 # --- CARD 2: ADMIN PANEL ---
 with col2:
-    # Logic: Use local file if exists, otherwise use a web URL
     if os.path.exists("admin_icon.png"):
         st.image("admin_icon.png", width=100)
     else:
-        # Fallback URL (A generic settings icon)
         st.image("https://cdn-icons-png.flaticon.com/512/2942/2942813.png", width=100)
         
-    if st.button("🔐 Open Admin Panel", key="btn_admin", use_container_width=True):
+    # REMOVED EMOJI HERE 👇
+    if st.button("Open Admin Panel", key="btn_admin", use_container_width=True):
         st.switch_page("pages/2_Admin.py")
 
 st.markdown("---")
