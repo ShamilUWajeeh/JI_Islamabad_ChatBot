@@ -8,7 +8,7 @@ st.header("🔐 Admin Control Panel")
 
 password = st.sidebar.text_input("Password", type="password")
 
-if password == "1234":  # CHANGE THIS PASSWORD
+if password == "Wajeeh@1408":  # CHANGE THIS PASSWORD
     
     tab1, tab2, tab3 = st.tabs(["📚 Knowledge Base", "👥 Candidates", "💬 Chat Logs"])
 
