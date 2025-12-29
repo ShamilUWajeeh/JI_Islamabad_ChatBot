@@ -27,7 +27,7 @@ def load_lottieurl(url):
     except:
         return None
 
-# Load Animation
+# Load Animation (Only used as backup if side_image.png is missing)
 lottie_coding = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_bo8vqwyw.json")
 
 # Helper to load local image for HTML embedding
@@ -77,7 +77,7 @@ st.markdown("""
         font-size: 4.5rem; /* MASSIVE TEXT SIZE */
         line-height: 1.0;
         margin: 0;
-        text-transform: uppercase; /* Makes it look more official */
+        text-transform: uppercase;
         letter-spacing: -1px;
     }
     
@@ -128,14 +128,8 @@ st.markdown("""
 
 # 1. Custom Animated Header (Logo + Big Text)
 logo_b64 = get_base64_image("logo.png")
+logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="header-logo">' if logo_b64 else ''
 
-# If logo exists, use it. If not, don't break the HTML.
-if logo_b64:
-    logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="header-logo">'
-else:
-    logo_html = '' 
-
-# CRITICAL FIX: unsafe_allow_html=True MUST be here
 st.markdown(f"""
     <div class="main-header-container">
         {logo_html}
@@ -144,14 +138,18 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# 2. Hero Section (Animation + Intro)
+# 2. Hero Section (With Side Image Check)
 col_anim, col_text = st.columns([1, 1.5])
 
 with col_anim:
-    if lottie_coding:
+    # Check for local side image first
+    if os.path.exists("side_image.jpeg"):
+        st.image("side_image.jpeg", use_container_width=True)
+    elif lottie_coding:
         st_lottie(lottie_coding, height=220, key="unique_animation_key")
     else:
-        st.image("https://cdn-icons-png.flaticon.com/512/10605/10605943.png", width=150)
+        # Simple text fallback if everything is missing
+        st.title("🇵🇰")
 
 with col_text:
     st.info("""
@@ -163,26 +161,30 @@ with col_text:
 
 st.write("") # Spacer
 
-# 3. Navigation Grid (Clean Buttons)
+# 3. Navigation Grid (USING LOCAL ICONS)
 st.subheader("Select a Module")
 col1, col2 = st.columns(2)
 
 # --- CARD 1: PUBLIC CHAT ---
 with col1:
+    # DIRECTLY referencing your local file
     if os.path.exists("chat_icon.png"):
         st.image("chat_icon.png", width=90)
     else:
-        st.image("https://cdn-icons-png.flaticon.com/512/8943/8943377.png", width=90)
+        # Fallback emoji ONLY if file is missing (No internet link)
+        st.header("🤖")
         
     if st.button("Open Public Chat", key="btn_chat", use_container_width=True):
         st.switch_page("pages/1_Chat.py")
 
 # --- CARD 2: ADMIN PANEL ---
 with col2:
+    # DIRECTLY referencing your local file
     if os.path.exists("admin_icon.png"):
         st.image("admin_icon.png", width=90)
     else:
-        st.image("https://cdn-icons-png.flaticon.com/512/2942/2942813.png", width=90)
+        # Fallback emoji ONLY if file is missing (No internet link)
+        st.header("🔐")
         
     if st.button("Open Admin Panel", key="btn_admin", use_container_width=True):
         st.switch_page("pages/2_Admin.py")

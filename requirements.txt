@@ -5,3 +5,5 @@ python-dotenv
 watchdog
 streamlit-lottie
 requests
+pdfplumber
+pypdf
