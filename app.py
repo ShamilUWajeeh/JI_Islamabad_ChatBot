@@ -13,7 +13,7 @@ st.markdown("""
     <style>
     #MainMenu, footer, header {visibility: hidden;}
     
-    /* Image Styling */
+    /* Side Image Styling */
     .side-image img {
         border-radius: 15px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -21,37 +21,53 @@ st.markdown("""
         object-fit: cover;
     }
 
+    /* Icon Styling - Centers the icons in their columns */
+    div[data-testid="stImage"] {
+        display: flex;
+        justify_content: center;
+        align-items: center;
+    }
+    
+    /* Icon Hover Effect */
+    div[data-testid="stImage"] img {
+        transition: transform 0.3s ease;
+    }
+    div[data-testid="stImage"] img:hover {
+        transform: scale(1.1);
+    }
+
     /* Buttons */
     .stButton button {
-        height: 60px;
+        height: 50px;
         font-size: 18px;
-        border-radius: 10px;
+        border-radius: 25px; /* Rounded pill shape */
         font-weight: 600;
         width: 100%;
+        margin-top: 10px;
+        border: 2px solid transparent;
         transition: all 0.3s;
     }
     
-    /* Green Primary Button */
-    .primary-btn button {
-        background-color: #008000 !important;
-        color: white !important;
-        border: none;
+    /* Primary Button (Chat) */
+    div[data-testid="column"]:nth-of-type(1) .stButton button {
+        background-color: #008000;
+        color: white;
     }
-    .primary-btn button:hover {
-        background-color: #006400 !important;
-        transform: translateY(-2px);
+    div[data-testid="column"]:nth-of-type(1) .stButton button:hover {
+        background-color: white;
+        color: #008000;
+        border-color: #008000;
+        box-shadow: 0 4px 10px rgba(0,128,0,0.2);
     }
 
-    /* Gray Secondary Button */
-    .secondary-btn button {
-        background-color: white !important;
-        color: #333 !important;
-        border: 2px solid #e0e0e0;
+    /* Secondary Button (Admin) */
+    div[data-testid="column"]:nth-of-type(2) .stButton button {
+        background-color: #f0f2f6;
+        color: #333;
     }
-    .secondary-btn button:hover {
-        border-color: #333;
-        background-color: #f9f9f9 !important;
-        transform: translateY(-2px);
+    div[data-testid="column"]:nth-of-type(2) .stButton button:hover {
+        background-color: #e0e0e0;
+        border-color: #999;
     }
     
     /* Text Styling */
@@ -60,19 +76,19 @@ st.markdown("""
         font-weight: 800;
         color: #333;
         line-height: 1.1;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
     .subtitle {
         font-size: 1.5rem;
         font-weight: 500;
         color: #008000;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
     .description {
         font-size: 1.2rem;
         color: #555;
         line-height: 1.6;
-        margin-bottom: 35px;
+        margin-bottom: 30px;
     }
     
     /* Footer */
@@ -96,53 +112,61 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 col_left, col_spacer, col_right = st.columns([1, 0.1, 1.2])
 
-# --- LEFT: DEDICATED SIDE IMAGE ---
+# --- LEFT: SIDE IMAGE ---
 with col_left:
     st.markdown('<div class="side-image">', unsafe_allow_html=True)
-    
-    # Priority Check: Look for side.png, then side.jpg
     if os.path.exists("side.png"):
-        st.image("side_image.jpeg", use_container_width=True)
-    elif os.path.exists("side_image.jpeg"):
-        st.image("side_image.jpeg", use_container_width=True)
+        st.image("side.png", use_container_width=True)
+    elif os.path.exists("side.jpg"):
+        st.image("side.jpg", use_container_width=True)
     else:
-        st.warning("⚠️ Image not found. Please name your file 'side.png'")
-        
+        # Fallback if image is missing
+        st.info("ℹ️ Add 'side.png' to display an image here.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- RIGHT: TEXT & ACTIONS ---
+# --- RIGHT: CONTENT & ICONS ---
 with col_right:
-    # Title
+    # 1. Header Text
     st.markdown('<div class="main-title">JI Islamabad<br>Digital Wing</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Official AI Smart Assistant</div>', unsafe_allow_html=True)
     
-    # Description
+    # 2. Description
     st.markdown("""
     <div class="description">
         <b>Assalam-o-Alaikum!</b><br>
-        Welcome to the central information hub. This AI is trained to assist you with:
-        <ul style="margin-top: 10px;">
-            <li>🗳️ <b>Election Constituencies:</b> UCs, Wards, and Census Blocks.</li>
-            <li>📜 <b>Party Information:</b> History, Manifesto, and Leadership.</li>
-            <li>🏢 <b>Organization:</b> Offices and Contact Details.</li>
+        This AI hub is designed to empower you with instant access to:
+        <ul style="margin-top: 5px;">
+            <li>🗳️ <b>Election Data:</b> Detailed Constituencies & Wards.</li>
+            <li>📜 <b>Party Info:</b> Manifesto, Leadership & History.</li>
+            <li>🏢 <b>Connect:</b> Office locations & Contact info.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
 
-    # Buttons
+    st.markdown("---") # Divider line
+
+    # 3. ACTION CARDS (Icons + Buttons)
     btn_col1, btn_col2 = st.columns(2)
     
+    # -- Chat Section --
     with btn_col1:
-        st.markdown('<div class="primary-btn">', unsafe_allow_html=True)
-        if st.button("Start Chatting 💬"):
+        if os.path.exists("chat_icon.png"):
+            st.image("chat_icon.png", width=80)  # Adjust width as needed
+        else:
+            st.write("💬") # Fallback emoji
+            
+        if st.button("Start Chatting"):
             st.switch_page("pages/1_Chat.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-        
+            
+    # -- Admin Section --
     with btn_col2:
-        st.markdown('<div class="secondary-btn">', unsafe_allow_html=True)
-        if st.button("Admin Panel 🔒"):
+        if os.path.exists("admin_icon.png"):
+            st.image("admin_icon.png", width=80) # Adjust width as needed
+        else:
+            st.write("⚙️") # Fallback emoji
+            
+        if st.button("Admin Panel"):
             st.switch_page("pages/2_Admin_Panel.py")
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 4. FOOTER ---
 st.markdown(
