@@ -1,11 +1,9 @@
 [theme]
-primaryColor = "#1E8F4E"        # Islamic Green (Primary Buttons/Inputs)
-backgroundColor = "#FFFFFF"     # Pure White (Main Background)
-secondaryBackgroundColor = "#F6F8F7" # Soft Off-White (Sidebar/Cards)
-textColor = "#111111"           # Deep Black (Main Text)
+primaryColor = "#008000"   # JI Green (Main Accent)
+backgroundColor = "#FFFFFF" # Clean White
+secondaryBackgroundColor = "#F0F2F6" # Light Grey Sidebar
+textColor = "#31333F"
 font = "sans serif"
 
 [server]
 headless = true
-enableCORS = false
-enableXsrfProtection = false

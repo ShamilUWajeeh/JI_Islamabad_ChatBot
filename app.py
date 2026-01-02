@@ -1,193 +1,155 @@
 import streamlit as st
-import requests
-from streamlit_lottie import st_lottie
-from db import init_db
 import os
-import base64
 
-# --- PAGE SETUP ---
+# --- 1. PAGE CONFIGURATION ---
 st.set_page_config(
-    page_title="JI Islamabad Portal",
-    page_icon="☪️",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    page_title="JI Islamabad Hub",
+    page_icon="logo.png",
+    layout="wide"
 )
 
-# Ensure DB is ready
-init_db()
-
-# --- ASSETS & STYLING ---
-
-def load_lottieurl(url):
-    try:
-        r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json()
-    except:
-        return None
-
-# Load Animation (Only used as backup if side_image.png is missing)
-lottie_coding = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_bo8vqwyw.json")
-
-# Helper to load local image for HTML embedding
-def get_base64_image(image_path):
-    if os.path.exists(image_path):
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    return ""
-
-# --- CSS STYLING ---
+# --- 2. CUSTOM CSS ---
 st.markdown("""
-<style>
-    /* 1. ANIMATIONS */
-    @keyframes float-logo {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-8px); }
-        100% { transform: translateY(0px); }
-    }
+    <style>
+    #MainMenu, footer, header {visibility: hidden;}
     
-    /* 2. MAIN LAYOUT COLORS */
-    .stApp {
-        background-color: #FFFFFF;
+    /* Image Styling */
+    .side-image img {
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        max-height: 500px;
+        object-fit: cover;
     }
-    
-    /* 3. CUSTOM HEADER (Logo + Big Text) */
-    .main-header-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 3px solid;
-        border-image: linear-gradient(135deg, #1E8F4E 0%, #2E9BCB 100%) 1;
-    }
-    
-    .header-logo {
-        width: 100px; /* Logo Size */
-        margin-right: 25px;
-        animation: float-logo 3s ease-in-out infinite; /* Floating Animation */
+
+    /* Buttons */
+    .stButton button {
+        height: 60px;
+        font-size: 18px;
         border-radius: 10px;
-    }
-    
-    .header-text {
-        font-family: 'sans-serif';
-        color: #111111;
-        font-weight: 900; /* Extra Bold */
-        font-size: 4.5rem; /* MASSIVE TEXT SIZE */
-        line-height: 1.0;
-        margin: 0;
-        text-transform: uppercase;
-        letter-spacing: -1px;
-    }
-    
-    /* Mobile Responsiveness for Header */
-    @media (max-width: 600px) {
-        .header-text { font-size: 2.5rem; }
-        .header-logo { width: 70px; }
-        .main-header-container { flex-direction: column; text-align: center; }
-        .header-logo { margin-right: 0; margin-bottom: 10px; }
-    }
-
-    /* 4. BUTTON CARDS */
-    div.stButton > button {
+        font-weight: 600;
         width: 100%;
-        height: 80px;
-        background-color: #FFFFFF;
-        color: #111111;
-        border: 2px solid #2E9BCB; /* Crescent Blue Border */
-        border-radius: 12px;
-        font-size: 20px;
-        font-weight: 700;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(46, 155, 203, 0.1);
+        transition: all 0.3s;
     }
     
-    /* Button Hover Effect */
-    div.stButton > button:hover {
-        background-color: #1E8F4E; /* Islamic Green */
-        color: #FFFFFF;
-        border-color: #1E8F4E;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(30, 143, 78, 0.25);
+    /* Green Primary Button */
+    .primary-btn button {
+        background-color: #008000 !important;
+        color: white !important;
+        border: none;
+    }
+    .primary-btn button:hover {
+        background-color: #006400 !important;
+        transform: translateY(-2px);
     }
 
-    /* 5. TEXT & ALERTS */
-    .stAlert {
-        background-color: #F0F7F4;
-        border-left: 5px solid #1E8F4E;
-        color: #111111;
+    /* Gray Secondary Button */
+    .secondary-btn button {
+        background-color: white !important;
+        color: #333 !important;
+        border: 2px solid #e0e0e0;
+    }
+    .secondary-btn button:hover {
+        border-color: #333;
+        background-color: #f9f9f9 !important;
+        transform: translateY(-2px);
     }
     
-    p { font-size: 1.1rem; color: #4A4A4A; }
+    /* Text Styling */
+    .main-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #333;
+        line-height: 1.1;
+        margin-bottom: 10px;
+    }
+    .subtitle {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #008000;
+        margin-bottom: 25px;
+    }
+    .description {
+        font-size: 1.2rem;
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 35px;
+    }
     
-</style>
+    /* Footer */
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #f8f9fa;
+        padding: 10px;
+        text-align: center;
+        font-size: 12px;
+        color: #888;
+        border-top: 1px solid #eee;
+    }
+    </style>
 """, unsafe_allow_html=True)
 
-# --- MAIN INTERFACE ---
+# --- 3. MAIN LAYOUT ---
+st.markdown("<br>", unsafe_allow_html=True)
 
-# 1. Custom Animated Header (Logo + Big Text)
-logo_b64 = get_base64_image("logo.png")
-logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="header-logo">' if logo_b64 else ''
+col_left, col_spacer, col_right = st.columns([1, 0.1, 1.2])
 
-st.markdown(f"""
-    <div class="main-header-container">
-        {logo_html}
-        <h1 class="header-text">Jamaat-e-Islami<br>Islamabad</h1>
-    </div>
-""", unsafe_allow_html=True)
-
-
-# 2. Hero Section (With Side Image Check)
-col_anim, col_text = st.columns([1, 1.5])
-
-with col_anim:
-    # Check for local side image first
-    if os.path.exists("side_image.jpeg"):
+# --- LEFT: DEDICATED SIDE IMAGE ---
+with col_left:
+    st.markdown('<div class="side-image">', unsafe_allow_html=True)
+    
+    # Priority Check: Look for side.png, then side.jpg
+    if os.path.exists("side.png"):
         st.image("side_image.jpeg", use_container_width=True)
-    elif lottie_coding:
-        st_lottie(lottie_coding, height=220, key="unique_animation_key")
+    elif os.path.exists("side_image.jpeg"):
+        st.image("side_image.jpeg", use_container_width=True)
     else:
-        # Simple text fallback if everything is missing
-        st.title("🇵🇰")
+        st.warning("⚠️ Image not found. Please name your file 'side.png'")
+        
+    st.markdown('</div>', unsafe_allow_html=True)
 
-with col_text:
-    st.info("""
-    **Assalam-o-Alaikum!**
+# --- RIGHT: TEXT & ACTIONS ---
+with col_right:
+    # Title
+    st.markdown('<div class="main-title">JI Islamabad<br>Digital Wing</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">Official AI Smart Assistant</div>', unsafe_allow_html=True)
     
-    Welcome to the official digital portal. 
-    Select a dashboard below to manage elections or assist voters.
-    """)
+    # Description
+    st.markdown("""
+    <div class="description">
+        <b>Assalam-o-Alaikum!</b><br>
+        Welcome to the central information hub. This AI is trained to assist you with:
+        <ul style="margin-top: 10px;">
+            <li>🗳️ <b>Election Constituencies:</b> UCs, Wards, and Census Blocks.</li>
+            <li>📜 <b>Party Information:</b> History, Manifesto, and Leadership.</li>
+            <li>🏢 <b>Organization:</b> Offices and Contact Details.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-st.write("") # Spacer
-
-# 3. Navigation Grid (USING LOCAL ICONS)
-st.subheader("Select a Module")
-col1, col2 = st.columns(2)
-
-# --- CARD 1: PUBLIC CHAT ---
-with col1:
-    # DIRECTLY referencing your local file
-    if os.path.exists("chat_icon.png"):
-        st.image("chat_icon.png", width=90)
-    else:
-        # Fallback emoji ONLY if file is missing (No internet link)
-        st.header("🤖")
+    # Buttons
+    btn_col1, btn_col2 = st.columns(2)
+    
+    with btn_col1:
+        st.markdown('<div class="primary-btn">', unsafe_allow_html=True)
+        if st.button("Start Chatting 💬"):
+            st.switch_page("pages/1_Chat.py")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-    if st.button("Open Public Chat", key="btn_chat", use_container_width=True):
-        st.switch_page("pages/1_Chat.py")
+    with btn_col2:
+        st.markdown('<div class="secondary-btn">', unsafe_allow_html=True)
+        if st.button("Admin Panel 🔒"):
+            st.switch_page("pages/2_Admin_Panel.py")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# --- CARD 2: ADMIN PANEL ---
-with col2:
-    # DIRECTLY referencing your local file
-    if os.path.exists("admin_icon.png"):
-        st.image("admin_icon.png", width=90)
-    else:
-        # Fallback emoji ONLY if file is missing (No internet link)
-        st.header("🔐")
-        
-    if st.button("Open Admin Panel", key="btn_admin", use_container_width=True):
-        st.switch_page("pages/2_Admin.py")
-
-st.markdown("---")
-st.caption("© 2025 Jamaat-e-Islami Islamabad | Developed for Digital Wing")
+# --- 4. FOOTER ---
+st.markdown(
+    """
+    <div class="footer">
+        © 2025 Jamaat-e-Islami Islamabad | Digital Wing | Powered by Gemini 2.0 Flash
+    </div>
+    """,
+    unsafe_allow_html=True
+)
