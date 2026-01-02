@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+from pathlib import Path  # <--- This line was missing!
 from chatbot_engine import ask_gemini_stream
 
 # --- PAGE CONFIG ---
@@ -32,10 +33,15 @@ st.markdown("""
 
 # --- SIDEBAR SETTINGS ---
 with st.sidebar:
-    st.image("logo.png", width=100) if "logo.png" in [f.name for f in Path(".").iterdir()] else st.write("🤖")
+    # Check if logo exists safely
+    if Path("logo.png").exists():
+        st.image("logo.png", width=100)
+    else:
+        st.write("🤖")
+        
     st.title("Settings")
     
-    # We keep this for user preference, even if the bot is smart enough to detect language
+    # We keep this for user preference
     language = st.radio("Response Language:", ["Auto-Detect", "Urdu", "English"])
     
     if st.button("Clear Chat History"):
@@ -82,9 +88,8 @@ if prompt := st.chat_input("Ask about UCs, Wards, or Organization..."):
         elif language == "English":
             final_prompt += " (Please answer in English)"
 
-        # --- THE FIX IS HERE: CALLING THE FUNCTION CORRECTLY ---
         try:
-            # We now only pass the prompt. The engine handles the API key and context.
+            # Call the engine
             stream_generator = ask_gemini_stream(final_prompt)
             
             for chunk in stream_generator:
