@@ -6,9 +6,11 @@ from google import genai
 from google.genai import types
 
 # --- CONFIGURATION ---
-DATA_FILE = "data.txt"  # Your main data file
-PRIMARY_MODEL = "gemini-2.5-pro"      # Smartest model
-BACKUP_MODEL = "gemini-1.5-flash"     # Faster backup model
+DATA_FILE = "data.txt" 
+PRIMARY_MODEL = "gemini-2.5-pro"      
+
+# CHANGE THIS LINE:
+BACKUP_MODEL = "gemini-1.5-flash-latest"   
 
 # --- LOAD API KEY ---
 try:
