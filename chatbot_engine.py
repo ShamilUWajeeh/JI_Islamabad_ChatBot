@@ -5,7 +5,7 @@ from google.genai import types
 
 # --- CONFIGURATION ---
 # Ensure this matches your actual file name
-DATA_FILE = "Cleaned_Master_List.txt" 
+DATA_FILE = "data.txt" 
 
 # Use the model available to your account
 MODEL_ID = "gemini-2.5-pro" 
