@@ -115,13 +115,13 @@ col_left, col_spacer, col_right = st.columns([1, 0.1, 1.2])
 # --- LEFT: SIDE IMAGE ---
 with col_left:
     st.markdown('<div class="side-image">', unsafe_allow_html=True)
-    if os.path.exists("side.png"):
-        st.image("side.png", use_container_width=True)
-    elif os.path.exists("side.jpg"):
-        st.image("side.jpg", use_container_width=True)
+    if os.path.exists("side_image.jpeg"):
+        st.image("side_image.jpeg", use_container_width=True)
+    elif os.path.exists("side_image.jpeg"):
+        st.image("side_image.jpeg", use_container_width=True)
     else:
         # Fallback if image is missing
-        st.info("ℹ️ Add 'side.png' to display an image here.")
+        st.info("ℹ️ Add 'side_image.jpeg' to display an image here.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 # --- RIGHT: CONTENT & ICONS ---
