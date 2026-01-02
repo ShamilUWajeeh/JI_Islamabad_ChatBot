@@ -1,16 +1,16 @@
 import os
 import time
+import random
 from google import genai
 from google.genai import types
-import streamlit as st # Used only to grab secrets easily
+import streamlit as st
 
 # --- CONFIGURATION ---
-IMAGE_FOLDER = "Urdu_Scans"       # Folder where your images are
-OUTPUT_FILE = "New_Data_Extracted.txt" # File to save the text
-MODEL_ID = "gemini-2.5-pro"      # Using the powerful model for best Urdu OCR
+IMAGE_FOLDER = "Urdu_Scans"
+OUTPUT_FILE = "New_Data_Extracted.txt"
+MODEL_ID = "gemini-2.5-pro"  # If this keeps failing, change to "gemini-1.5-flash"
 
-# 1. Setup Client (Grabs key from your .streamlit/secrets.toml)
-# Note: Ensure you are running this from the main folder where secrets.toml exists
+# Setup Client
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
 except:
@@ -19,73 +19,80 @@ except:
 
 client = genai.Client(api_key=api_key)
 
-def transribe_image(image_path):
-    """Sends image to Gemini and asks for formatted text extraction."""
+def transcribe_with_retry(image_path, retries=5):
+    """Tries to transcribe. If 503 error, waits and tries again."""
     
-    # Read image file
     with open(image_path, "rb") as f:
         image_bytes = f.read()
 
     prompt = """
     You are an expert Data Entry Clerk. 
     Look at this image of an Election Commission Form-09.
-    
     1. Extract the text exactly as it is (Urdu and English).
     2. Format it STRICTLY in this layout:
-    
     === UC [Number]: [Name] ===
     EXTENT:
     1. GW-01: [Urdu/English Text]
-    2. GW-02: [Urdu/English Text]
     ...
-    9. GW-09: [Urdu/English Text]
-    CENSUS BLOCKS: [List of numbers separated by commas]
-    
-    3. Correct any obvious Urdu spelling errors (e.g. 'موٹی' to 'موتی').
-    4. Do not include signature lines or header text like "ELECTION COMMISSION".
+    CENSUS BLOCKS: [List of numbers]
+    3. Correct obvious Urdu spelling errors.
     """
 
-    try:
-        response = client.models.generate_content(
-            model=MODEL_ID,
-            contents=[
-                types.Part.from_text(text=prompt),
-                types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg") # Adjust mime_type if PNG
-            ]
-        )
-        return response.text
-    except Exception as e:
-        print(f"⚠️ Error processing {image_path}: {e}")
-        return None
+    for attempt in range(retries):
+        try:
+            # Try sending to Google
+            response = client.models.generate_content(
+                model=MODEL_ID,
+                contents=[
+                    types.Part.from_text(text=prompt),
+                    types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg")
+                ]
+            )
+            return response.text
+            
+        except Exception as e:
+            # Check if it is a 503 (Overloaded) error
+            error_str = str(e)
+            if "503" in error_str or "429" in error_str:
+                wait_time = (2 ** attempt) + random.uniform(0, 1) # Exponential backoff (2s, 4s, 8s...)
+                print(f"   ⚠️ Server busy (503). Retrying in {wait_time:.1f} seconds...")
+                time.sleep(wait_time)
+            else:
+                # If it's a different error, stop trying
+                print(f"   ❌ Fatal Error: {e}")
+                return None
+    
+    print("   ❌ Failed after multiple attempts.")
+    return None
 
-# --- MAIN LOOP ---
 def main():
     print(f"🚀 Starting Transcription using {MODEL_ID}...")
     
-    # Get all images
     valid_extensions = (".jpg", ".jpeg", ".png")
-    files = [f for f in os.listdir(IMAGE_FOLDER) if f.lower().endswith(valid_extensions)]
-    files.sort() # Process in order
+    # Only pick files that start with "Page_" to avoid random images
+    files = [f for f in os.listdir(IMAGE_FOLDER) if f.lower().endswith(valid_extensions) and f.startswith("Page_")]
+    files.sort()
 
     if not files:
-        print(f"❌ No images found in '{IMAGE_FOLDER}'")
+        print(f"❌ No 'Page_*.jpg' images found in '{IMAGE_FOLDER}'")
         return
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+    # append mode 'a' so we don't overwrite if we restart
+    with open(OUTPUT_FILE, "a", encoding="utf-8") as f: 
         for i, filename in enumerate(files):
             filepath = os.path.join(IMAGE_FOLDER, filename)
             print(f"[{i+1}/{len(files)}] Processing {filename}...", end=" ", flush=True)
             
-            # Call AI
-            text = transribe_image(filepath)
+            text = transcribe_with_retry(filepath)
             
             if text:
                 f.write(text + "\n\n")
                 print("✅ Done.")
+                f.flush() # Save progress immediately
             else:
-                print("❌ Failed.")
+                f.write(f"\n=== FAILED PAGE: {filename} ===\n\n")
             
-            # Small pause to be nice to the API
+            # Standard pause between pages
             time.sleep(2)
 
     print(f"\n🎉 All done! Data saved to: {OUTPUT_FILE}")
