@@ -73,7 +73,7 @@ with top_col1:
 
 with top_col2:
     if language_choice == "English":
-        st.markdown("## **Election Constituency Assistant**")
+        st.markdown("## **Ask JI Islamabad**")
         st.caption("Official AI Bot for Jamaat-e-Islami Islamabad")
     else:
         st.markdown("## **انتخابی حلقہ جات اسسٹنٹ**", unsafe_allow_html=True)
