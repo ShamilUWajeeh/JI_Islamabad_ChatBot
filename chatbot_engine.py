@@ -10,7 +10,7 @@ DATA_FILE = "data.txt"
 PRIMARY_MODEL = "gemini-2.5-pro"      
 
 # CHANGE THIS LINE:
-BACKUP_MODEL = "gemini-1.5-flash-latest"   
+BACKUP_MODEL = "gemini-1.5-flash-001"   
 
 # --- LOAD API KEY ---
 try:
