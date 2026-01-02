@@ -7,4 +7,4 @@ streamlit-lottie
 requests
 pdfplumber
 pypdf
-google-generativeai
+google-genai
